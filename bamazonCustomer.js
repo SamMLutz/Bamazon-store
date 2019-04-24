@@ -32,7 +32,7 @@ connection.connect(function (err) {
     // addProduct("Crockpot", "Homegoods", 30.00, 35);
     // addProduct("TV", "Electronics", 300.00, 60);
     // addProduct("Frozen Pizza", "Grocery", 8.00, 120);
-
+    // updateProduct(10, "Game system");
     // deleteProduct("Bamazon Balexa");
     // getAll();
     // connection.query("SELECT stock_quantity from Bamazon_inventory WHERE id = 1", function (err, res) {
@@ -71,7 +71,7 @@ const addProduct = function (productName, departmentName, price, stockQuantity) 
         }
     )
 };
-
+//  delete product function
 const deleteProduct = function (item) {
     connection.query("DELETE FROM Bamazon_inventory WHERE ?",
         {
@@ -84,6 +84,26 @@ const deleteProduct = function (item) {
             // connection.end();
         })
 };
+
+// update product function
+const updateProduct = function (quantity, productName) {
+    connection.query(
+        "UPDATE Bamazon_inventory SET ? WHERE ?", [
+            {
+                stock_quantity: quantity
+            },
+            {
+                product_name: productName
+            }
+        ],
+        function (err, res) {
+            if (err) throw err;
+            console.log("item updated")
+            console.log(res);
+            // connection.end()
+        }
+    )
+}
 
 // start function to initiate buyer experience
 function start() {
@@ -124,7 +144,7 @@ function placeOrder() {
                     // if (order quatity <= answer.quantity ){
 
                     // }
-                    if (res > answer.quantity) {
+                    if (res[0].stock_quantity > answer.quantity) {
                         console.log("churp");
                         connection.query("UPDATE Bamazon_inventory SET ? WHERE ?", [
                             {
@@ -132,16 +152,18 @@ function placeOrder() {
                             },
                             {
                                 id: answer.order
-                            }], function(err, res) {
+                            }], function (err, res) {
                                 if (err) throw err;
                             }
-
                         )
                         // console.log(answer.quantity)
                         // console.log(res[0].stock_quantity)
                         // console.log(res -= answer.quantity)
                     }
-                    
+                    else {
+                        console.log("item is sold out :(")
+                    }
+
                     connection.end();
                 });
         });
