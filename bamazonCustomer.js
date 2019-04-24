@@ -141,9 +141,6 @@ function placeOrder() {
                     if (err) throw err;
                     console.log(res)
 
-                    // if (order quatity <= answer.quantity ){
-
-                    // }
                     if (res[0].stock_quantity > answer.quantity) {
                         console.log("churp");
                         connection.query("UPDATE Bamazon_inventory SET ? WHERE ?", [
@@ -154,6 +151,9 @@ function placeOrder() {
                                 id: answer.order
                             }], function (err, res) {
                                 if (err) throw err;
+                                
+                                // console.log("Congrats you have recieved " + answer.quantity + " " + answer.product_name)
+                                // console.log(answer);
                             }
                         )
                         // console.log(answer.quantity)
@@ -163,7 +163,6 @@ function placeOrder() {
                     else {
                         console.log("item is sold out :(")
                     }
-
                     connection.end();
                 });
         });
