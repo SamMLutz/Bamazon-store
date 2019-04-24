@@ -18,6 +18,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
+    console.log("Bamazon_inventory")
     start();
     // placeOrder();
     // addProduct("Kingdom Hearts 3", "Video Games", 40.00, 50);
@@ -34,7 +35,11 @@ connection.connect(function (err) {
 
     // deleteProduct("Bamazon Balexa");
     // getAll();
-    connection.end();
+    // connection.query("SELECT stock_quantity from Bamazon_inventory WHERE id = 1", function (err, res) {
+    //     if (err) throw err;
+    //     console.log(res)
+    // });
+    // connection.end();
 
 });
 
@@ -103,5 +108,41 @@ function placeOrder() {
                 type: "input",
                 message: "How many units of this product would you like to buy?"
             }
-        ])
+        ]).then(function (answer) {
+            console.log("order id: " + answer.order);
+            console.log("order quantity: " + answer.quantity);
+
+            let query = "SELECT stock_quantity from Bamazon_inventory WHERE id = "
+
+            connection.query(query + answer.order,
+                {
+                    id: answer.order
+                }, function (err, res) {
+                    if (err) throw err;
+                    console.log(res)
+
+                    // if (order quatity <= answer.quantity ){
+
+                    // }
+                    if (res > answer.quantity) {
+                        console.log("churp");
+                        connection.query("UPDATE Bamazon_inventory SET ? WHERE ?", [
+                            {
+                                stock_quantity: res[0].stock_quantity - answer.quantity
+                            },
+                            {
+                                id: answer.order
+                            }], function(err, res) {
+                                if (err) throw err;
+                            }
+
+                        )
+                        // console.log(answer.quantity)
+                        // console.log(res[0].stock_quantity)
+                        // console.log(res -= answer.quantity)
+                    }
+                    
+                    connection.end();
+                });
+        });
 }
