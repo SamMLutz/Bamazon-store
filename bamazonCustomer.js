@@ -116,7 +116,9 @@ function start() {
     })
 }
 
+// function to place and fulfill order
 function placeOrder() {
+    // inquirer to find out which item and how many user would like to purchase
     inquirer
         .prompt([
             {
@@ -134,16 +136,17 @@ function placeOrder() {
             // console.log("order quantity: " + answer.quantity);
 
             let query = "SELECT stock_quantity from Bamazon_inventory WHERE id = "
-
+            // grab stock quanity of the if corresponding to the user order
             connection.query(query + answer.order,
                 {
                     id: answer.order
                 }, function (err, res) {
                     if (err) throw err;
                     // console.log(res)
-
+                    // if statement to check store quantity against users order quantity
                     if (res[0].stock_quantity > answer.quantity) {
                         console.log("order succesful");
+                        // updating inventory database to reflect new stock quantity after user purchase
                         connection.query("UPDATE Bamazon_inventory SET ? WHERE ?", [
                             {
                                 stock_quantity: res[0].stock_quantity - answer.quantity
@@ -157,14 +160,17 @@ function placeOrder() {
                                 // console.log(answer);
                             }
                         )
+                        // grabbing product name that corresponds with user order (by ID)
                         connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
                             // if (err) throw err;
+                            // confirm user order and quantity
                             console.log(`You ordered ${answer.quantity} ${res[0].product_name}`)
                             // console.log(answer.order)
                         })
                         // console.log(answer.quantity)
                         // console.log(res[0].stock_quantity)
                         // console.log(res -= answer.quantity)
+                        // grabbing price of users order corresponding to user selected item ID
                         connection.query("SELECT price FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
                             // if (err) throw err;
                             // console.log(`Your total is: ${res[0].price} dollar(s)`);
@@ -173,6 +179,7 @@ function placeOrder() {
                         })
                         
                     }
+                    // else statement to show item as sold out if stock quantity is less then the customer order quantity
                     else {
                         console.log("item is sold out :(")
                     }
