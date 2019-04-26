@@ -20,7 +20,7 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
     console.log("Bamazon_inventory")
     start();
-    // placeOrder();
+
     // addProduct("Kingdom Hearts 3", "Video Games", 40.00, 50);
     // addProduct("Bamazon Balexa", "Homegoods", 150.00, 25);
     // addProduct("Headphones", "Electronics", 25.00, 20);
@@ -32,15 +32,10 @@ connection.connect(function (err) {
     // addProduct("Crockpot", "Homegoods", 30.00, 35);
     // addProduct("TV", "Electronics", 300.00, 60);
     // addProduct("Frozen Pizza", "Grocery", 8.00, 120);
+
     // updateProduct(10, "Game system");
     // deleteProduct("Bamazon Balexa");
     // getAll();
-    // connection.query("SELECT stock_quantity from Bamazon_inventory WHERE id = 1", function (err, res) {
-    //     if (err) throw err;
-    //     console.log(res)
-    // });
-    // connection.end();
-
 });
 
 // function to get all products
@@ -58,7 +53,6 @@ const addProduct = function (productName, departmentName, price, stockQuantity) 
     connection.query(
         "INSERT INTO Bamazon_inventory SET ?",
         {
-            // position: position,  
             product_name: productName,
             department_name: departmentName,
             price: price,
@@ -72,6 +66,7 @@ const addProduct = function (productName, departmentName, price, stockQuantity) 
         }
     )
 };
+
 //  delete product function
 const deleteProduct = function (item) {
     connection.query("DELETE FROM Bamazon_inventory WHERE ?",
@@ -104,21 +99,20 @@ const updateProduct = function (quantity, productName) {
             // connection.end()
         }
     )
-}
+};
 
 // start function to initiate buyer experience
 function start() {
     connection.query("SELECT * FROM Bamazon_inventory", function (err, res) {
         if (err) throw err;
         console.table(res)
-        // connection.end();
         placeOrder();
     })
-}
+};
 
 // function to place and fulfill order
 function placeOrder() {
-    // inquirer to find out which item and how many user would like to purchase
+    // inquirer to ask and find out which item and how many the user would like to purchase
     inquirer
         .prompt([
             {
@@ -135,14 +129,16 @@ function placeOrder() {
             // console.log("order id: " + answer.order);
             // console.log("order quantity: " + answer.quantity);
 
-            let query = "SELECT stock_quantity from Bamazon_inventory WHERE id = "
             // grab stock quanity of the if corresponding to the user order
+            let query = "SELECT stock_quantity from Bamazon_inventory WHERE id = "
+
             connection.query(query + answer.order,
                 {
                     id: answer.order
                 }, function (err, res) {
                     if (err) throw err;
                     // console.log(res)
+
                     // if statement to check store quantity against users order quantity
                     if (res[0].stock_quantity > answer.quantity) {
                         console.log("order succesful");
@@ -155,13 +151,12 @@ function placeOrder() {
                                 id: answer.order
                             }], function (err, res) {
                                 if (err) throw err;
-                                
-                                // console.log("Congrats you have recieved " + answer.quantity + " " + answer.product_name)
                                 // console.log(answer);
                             }
-                        )
+                        );
+
                         // grabbing product name that corresponds with user order (by ID)
-                        connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
+                        connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function (err, res) {
                             // if (err) throw err;
                             // confirm user order and quantity
                             console.log(`You ordered ${answer.quantity} ${res[0].product_name}`)
@@ -169,15 +164,14 @@ function placeOrder() {
                         })
                         // console.log(answer.quantity)
                         // console.log(res[0].stock_quantity)
-                        // console.log(res -= answer.quantity)
+
                         // grabbing price of users order corresponding to user selected item ID
-                        connection.query("SELECT price FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
+                        connection.query("SELECT price FROM Bamazon_inventory WHERE id = ?", answer.order, function (err, res) {
                             // if (err) throw err;
-                            // console.log(`Your total is: ${res[0].price} dollar(s)`);
+
+                            // log the total price of user purchase
                             console.log("Your total is: " + (res[0].price * answer.quantity) + " dollar(s)");
-                            // console.log(answer.order)
                         })
-                        
                     }
                     // else statement to show item as sold out if stock quantity is less then the customer order quantity
                     else {
