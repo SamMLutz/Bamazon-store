@@ -45,6 +45,7 @@ connection.connect(function (err) {
 
 // function to get all products
 const getAll = function () {
+    // select all products from inventory and log to the screen
     connection.query("SELECT * FROM Bamazon_inventory", function (err, res) {
         if (err) throw err;
         console.log(res)
@@ -129,8 +130,8 @@ function placeOrder() {
                 message: "How many units of this product would you like to buy?"
             }
         ]).then(function (answer) {
-            console.log("order id: " + answer.order);
-            console.log("order quantity: " + answer.quantity);
+            // console.log("order id: " + answer.order);
+            // console.log("order quantity: " + answer.quantity);
 
             let query = "SELECT stock_quantity from Bamazon_inventory WHERE id = "
 
@@ -142,7 +143,7 @@ function placeOrder() {
                     // console.log(res)
 
                     if (res[0].stock_quantity > answer.quantity) {
-                        console.log("churp");
+                        console.log("order succesful");
                         connection.query("UPDATE Bamazon_inventory SET ? WHERE ?", [
                             {
                                 stock_quantity: res[0].stock_quantity - answer.quantity
@@ -158,12 +159,19 @@ function placeOrder() {
                         )
                         connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
                             // if (err) throw err;
-                            console.log(res[0].product_name)
+                            console.log(`You ordered ${answer.quantity} ${res[0].product_name}`)
                             // console.log(answer.order)
                         })
                         // console.log(answer.quantity)
                         // console.log(res[0].stock_quantity)
                         // console.log(res -= answer.quantity)
+                        connection.query("SELECT price FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
+                            // if (err) throw err;
+                            // console.log(`Your total is: ${res[0].price} dollar(s)`);
+                            console.log("Your total is: " + (res[0].price * answer.quantity) + " dollar(s)");
+                            // console.log(answer.order)
+                        })
+                        
                     }
                     else {
                         console.log("item is sold out :(")
