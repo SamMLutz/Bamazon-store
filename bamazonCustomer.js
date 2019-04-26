@@ -151,15 +151,16 @@ function placeOrder() {
                                 id: answer.order
                             }], function (err, res) {
                                 if (err) throw err;
-                                connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
-                                    // if (err) throw err;
-                                    console.log(res)
-                                    console.log(answer.order)
-                                })
+                                
                                 // console.log("Congrats you have recieved " + answer.quantity + " " + answer.product_name)
                                 // console.log(answer);
                             }
                         )
+                        connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
+                            // if (err) throw err;
+                            console.log(res[0].product_name)
+                            // console.log(answer.order)
+                        })
                         // console.log(answer.quantity)
                         // console.log(res[0].stock_quantity)
                         // console.log(res -= answer.quantity)
