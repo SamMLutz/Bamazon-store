@@ -139,7 +139,7 @@ function placeOrder() {
                     id: answer.order
                 }, function (err, res) {
                     if (err) throw err;
-                    console.log(res)
+                    // console.log(res)
 
                     if (res[0].stock_quantity > answer.quantity) {
                         console.log("churp");
@@ -151,7 +151,11 @@ function placeOrder() {
                                 id: answer.order
                             }], function (err, res) {
                                 if (err) throw err;
-                                
+                                connection.query("SELECT product_name FROM Bamazon_inventory WHERE id = ?", answer.order, function(err, res){
+                                    // if (err) throw err;
+                                    console.log(res)
+                                    console.log(answer.order)
+                                })
                                 // console.log("Congrats you have recieved " + answer.quantity + " " + answer.product_name)
                                 // console.log(answer);
                             }
