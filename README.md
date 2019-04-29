@@ -10,3 +10,4 @@
   buy. Using the MySQL node package we can connect to the databse using node in our code editor. Once connected to the 
   database we right a few functions to including various *connection queries* to update the database. Using these functions we can add products, delete products, view all and update indiviual values of each (price, quantity etc). Once the database has been populated with items we use inquire to ask the user to select which item they would like to buy and the number of units they would like. Then using the gathered info from inquirer we use connection queries to calculate the total price for the 
   user as well as the new stock quantity after the users purchase. Below you will find screenhots of the store in action!
+![image](https://user-images.githubusercontent.com/46271448/56915594-f3cc7180-6a84-11e9-9c61-30fc9fb1a048.png)
